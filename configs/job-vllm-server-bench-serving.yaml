@@ -52,12 +52,16 @@ spec:
         args:
             - |
               apt-get update
-              apt-get install git
-              git clone git@github.com:markxio/bench_serving.git
-              cd bench_serving
+              apt-get -y install git
+              rm -rf /mnt/ceph/tmp/bench_serving
+              mkdir -p /mnt/ceph/tmp
+              git clone https://github.com/markxio/bench_serving.git /mnt/ceph/tmp/bench_serving
+              cd /mnt/ceph/tmp/bench_serving
               pip install -r requirements.txt
-              python health.py &> health.log
+              python health.py
+              echo "Starting to serve bench (sending http requests)..."
               bash bench.sh &> perf.log
+              echo "Starting to serve bench (sending http requests)... done!"
         resources:
           requests:
             cpu: 1
