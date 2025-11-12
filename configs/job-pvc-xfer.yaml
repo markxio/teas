@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: pvc-xfer-
+  labels:
+    kueue.x-k8s.io/queue-name:  eidf230ns-user-queue
+spec:
+  completions: 1
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 1800
+  template:
+    metadata:
+      name: job-pvc-xfer
+    spec:
+      containers:
+      - name: pvc-xfer
+        image: python:3.10-slim 
+        imagePullPolicy: IfNotPresent
+        args: ["sleep", "infinity"]
+        resources:
+          requests:
+            cpu: 1
+            memory: '4Gi'
+          limits:
+            cpu: 1
+            memory: '4Gi'
+        volumeMounts:
+          - mountPath: /mnt/ceph
+            name: volume
+      restartPolicy: Never
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: client-ceph-pvc
