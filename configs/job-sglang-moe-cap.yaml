@@ -1,0 +1,84 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: sglang-moe-cap-
+  labels:
+    kueue.x-k8s.io/queue-name:  eidf230ns-user-queue
+spec:
+  completions: 1
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 1800
+  template:
+    metadata:
+      name: job-sglang-moe-cap
+    spec:
+      containers:
+      - name: sglang-server
+        image: lmsysorg/sglang:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            apt-get update
+            apt-get -y install git
+            rm -rf /mnt/ceph/tmp/MoE-CAP
+            git clone https://github.com/markxio/MoE-CAP.git /mnt/ceph/tmp/MoE-CAP
+            cd /mnt/ceph/tmp/MoE-CAP
+            pip install -e .
+            python -m moe_cap.systems.sglang \ 
+            --model-path Qwen/Qwen3-30B-A3B-Thinking-2507-FP8 \
+            --port 30000 \
+            --expert-distribution-recorder-mode stat \
+            --tp-size 1
+        ports:
+          - containerPort: 30000 
+        resources:
+          requests:
+            cpu: 48
+            memory: '512Gi'
+          limits:
+            cpu: 48
+            memory: '512Gi'
+            nvidia.com/gpu: 2
+        volumeMounts:
+          - mountPath: /mnt/ceph
+            name: volume
+      - name: bench-serving
+        image: python:3.10-slim 
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash", "-c"]
+        args:
+            - |
+              apt-get update
+              # Wait until the /health endpoint returns HTTP 200
+              echo "Waiting for SGLang server to be ready..."
+              until curl -s -f http://localhost:30000/health > /dev/null; do
+                echo -n "."
+                sleep 2
+              done
+              echo "SGLang server is ready!"
+              cd /mnt/ceph/tmp/MoE-CAP
+              pip install gputil
+              echo "Starting to serve bench (sending http requests)..."
+              python -m moe_cap.runner.sglang_profile \
+              --config-file configs/gsm8k_qwen3_30b_a3b_fp8.yaml \
+              --output_dir /mnt/ceph/tmp/MoE-CAP/outputs/
+              echo "Starting to serve bench (sending http requests)... done!"
+        resources:
+          requests:
+            cpu: 1
+            memory: '4Gi'
+          limits:
+            cpu: 1
+            memory: '4Gi'
+        volumeMounts:
+          - mountPath: /mnt/ceph
+            name: volume
+      restartPolicy: Never
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: client-ceph-pvc
+      nodeSelector:
+        nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3
+        #nvidia.com/gpu.product: NVIDIA-A100-SXM4-40GB-MIG-1g.5gb
