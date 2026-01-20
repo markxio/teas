@@ -10,7 +10,7 @@ Serving scenarios for inference:
 
 ## Deployment on EIDF
 
-Deploy an LLM with vllm/sglang/tensorrt in a Docker container on Kubernetes serving inference through an API. In another container, launch a client sending prompts to the inference server and receiving responses back. 
+On EIDF, we focus on offline and online scenarios with the following inference serving engines. Deploy an LLM with vllm/sglang/tensorrt in a Docker container on Kubernetes serving inference through an API. In another container, launch a client sending prompts to the inference server and receiving responses back. 
 
 1. Create a persistent volume claim (pvc) with [configs/pvc.yaml](configs/pvc.yaml)
 2. Create a job with two containers (deployed in a single pod), with an inference-server container and a benchmark-serving-client container. Mount the pvc into the benchmarking-serving-client container.
