@@ -9,8 +9,8 @@ RUN_DEEPSEEK_V2_LITE=0
 RUN_DEEPSEEK_R1=0
 
 RUN_A100=1
-RUN_H100=0
-RUN_H200=0
+RUN_H100=1
+RUN_H200=1
 
 for yaml in "${kubernetes_configs[@]}"; do
 	if [[ $yaml == *"Qwen1.5"* && $RUN_QWEN1_5 -eq 0 ]]; then
@@ -33,5 +33,5 @@ for yaml in "${kubernetes_configs[@]}"; do
 		continue
 	fi
 
-	kubectl -n eidf230ns create -f kubernetes_configs/${yaml}
+	kubectl -n eidf230ns create -f ${yaml}
 done
