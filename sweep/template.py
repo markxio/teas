@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Template:
     def __init__(self):
         return
@@ -13,6 +15,8 @@ class Template:
         num_gpu: int, \
         gpu_product: str):
 
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        
         output_dir=f"{model_name.split("/")[1]}_{gpu_product.split("-")[1]}x{num_gpu}_{target_input_tokens}_{target_output_tokens}_bs{batch_size}_{dataset}"
         return f"""
 apiVersion: batch/v1
@@ -35,15 +39,14 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
           - name: SGLANG_EXPERT_DISTRIBUTION_RECORDER_DIR
-            value: "/mnt/ceph/tmp/sglang_expert_distribution_recorder"
+            value: "/dev/shm/sglang_expert_distribution_recorder"
         command: ["/bin/bash", "-c"]
         args:
           - |
             apt-get update
             apt-get -y install git
-            rm -rf /mnt/ceph/tmp/MoE-CAP
-            git clone https://github.com/markxio/MoE-CAP.git /mnt/ceph/tmp/MoE-CAP
-            cd /mnt/ceph/tmp/MoE-CAP
+            git clone https://github.com/markxio/MoE-CAP.git /dev/shm/MoE-CAP
+            cd /dev/shm/MoE-CAP
             pip install -e .
             pip install gputil
 
@@ -52,7 +55,9 @@ spec:
               --model-path {model_name} \\
               --port 30000 \\
               --expert-distribution-recorder-mode stat \\
-              --tp-size {tensor_parallel_size} &
+              --tp-size {tensor_parallel_size} \\
+              &> /dev/shm/{output_dir}_{timestamp}.server_log &
+            SERVER_PID=$!
 
             # Wait until the /health endpoint returns HTTP 200
             echo "Waiting for SGLang server to be ready..."
@@ -61,11 +66,10 @@ spec:
               sleep 2
             done
             echo "SGLang server is ready!"
-            mkdir -p /mnt/ceph/tmp/MoE-CAP-outputs/
 
             echo "Starting to serve bench (sending http requests)..."
             
-            mkdir -p /mnt/ceph/tmp/MoE-CAP-outputs/{output_dir}
+            mkdir -p /dev/shm/{output_dir}
             python -m moe_cap.runner.openai_api_profile \\
               --model_name {model_name} \\
               --datasets {dataset} \\
@@ -77,8 +81,17 @@ spec:
               --backend sglang \\
               --ignore-eos \\
               --server-batch-size {batch_size} \\
-              --output_dir /mnt/ceph/tmp/MoE-CAP-outputs/{output_dir}
+              --output_dir /dev/shm/{output_dir} \\
+              &> /dev/shm/{output_dir}_{timestamp}.client_log
             echo "Starting to serve bench (sending http requests)... done!"
+            echo "Benchmark finished, shutting down server..."
+            kill $SERVER_PID
+            wait $SERVER_PID
+            echo "Server stopped. Copying files to pvc..."
+            mkdir -p /mnt/ceph/tmp/MoE-CAP-outputs
+            cp -R /dev/shm/{output_dir} /mnt/ceph/tmp/MoE-CAP-outputs/
+            cp /dev/shm/{output_dir}_{timestamp}* /mnt/ceph/tmp/MoE-CAP-outputs/
+            echo "Files copied, exiting container"
         ports:
           - containerPort: 30000 
         resources:
@@ -92,11 +105,17 @@ spec:
         volumeMounts:
           - mountPath: /mnt/ceph
             name: volume
+          - mountPath: /dev/shm
+            name: dshm
       restartPolicy: Never
       volumes:
         - name: volume
           persistentVolumeClaim:
             claimName: client-ceph-pvc
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Gi
       nodeSelector:
         nvidia.com/gpu.product: {gpu_product}
                """
