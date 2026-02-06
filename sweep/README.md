@@ -1,5 +1,7 @@
 # Generate Sweep
 
+This repository contains a benchmark sweep to evaluate MoE-Benchmark performance on [EIDF](https://edinburgh-international-data-facility.ed.ac.uk/). The contained k8s configurations are created with the provided Python generator based on the parameters specified in [data](data).
+
 - check out the table of experiments as csv
 - generate yaml configs from csv
 - launch jobs on eidf
@@ -8,139 +10,6 @@
 ## Experiments
 
 The list of experiments with parameters to be found in [data/experiments.csv](data/experiments.csv).
-
-<details>
-
-<summary>List of experiments</summary>
-
-| model_name | gpu | num_gpu | target_input_tokens | target_output_tokens | batch_size | dataset | num_samples |
-|---|---|---|---|---|---|---|---|
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 1 | 4K | 1K | 1 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 1 | 13K | 1K | 1 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 4K | 1K | 1 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 13K | 1K | 1 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 13K | 1K | 1 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 1 | 4K | 1K | 32 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 4K | 1K | 32 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 13K | 1K | 32 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 13K | 1K | 32 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 4K | 1K | 64 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 13K | 1K | 64 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 13K | 1K | 64 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 1 | 4K | 1K | 128 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | A100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| Qwen/Qwen1.5-MoE-A2.7B-Chat | H200 | 8 | 13K | 1K | 128 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 1 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 1 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 1 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 13K | 1K | 32 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 13K | 1K | 32 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 4K | 1K | 64 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 13K | 1K | 64 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 13K | 1K | 64 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 1 | 4K | 1K | 128 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | A100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-V2-Lite-Chat | H200 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x7B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 1 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 32 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 64 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | A100 | 8 | 13K | 1K | 128 | longbench | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| mistralai/Mixtral-8x22B-Instruct-v0.1 | H200 | 8 | 13K | 1K | 128 | longbench | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 4K | 1K | 1 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 13K | 1K | 1 | longbench | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 4K | 1K | 32 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 13K | 1K | 32 | longbench | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 4K | 1K | 64 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 13K | 1K | 64 | longbench | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 4K | 1K | 128 | gsm8k | 100 |
-| deepseek-ai/DeepSeek-R1 | H200 | 8 | 13K | 1K | 128 | longbench | 100 |
-
-</details>
 
 ## Generate kubernetes configs
 
@@ -153,17 +22,17 @@ python3 -m venv venv
 source venv/bin/activate
 pip install pandas
 
-python3 generate.py --csv_file=data/experiments.csv --target_dir=kubernetes_configs
+python3 generate.py --csv_file=data/experiments.csv --target_dir=configs
 ```
 
 ## Create kubernetes jobs
 
-Run [submit_jobs.sh](submit_jobs.sh). Note parameters to selectively create jobs based on str prefix (model):
+Run [submit_jobs.sh](submit_jobs.sh). Note parameters to selectively create jobs based on str matching (model):
 
 ```
 #!/bin/bash
 
-kubernetes_configs=($(ls kubernetes_configs/*.yaml))
+kubernetes_configs=($(ls configs/*.yaml))
 
 RUN_QWEN1_5=1
 RUN_MIXTRAL_8x7B=0
@@ -196,7 +65,7 @@ for yaml in "${kubernetes_configs[@]}"; do
 		continue
 	fi
 
-	kubectl -n eidf230ns create -f kubernetes_configs/${yaml}
+	kubectl -n eidf230ns create -f $yaml
 done
 ```
 
@@ -234,7 +103,7 @@ $ cat cap_metrics_gsm8k_20260203_151054.json
     "precision": "bfloat16",
     "e2e_s": 54.04,
     "batch_size": null,
-    "gpu_type": "1xUnknown",
+    "gpu_type": "1xA100",
     "dataset": "gsm8k",
     "ignore_eos": true,
     "server_batch_size": 1,
@@ -247,7 +116,7 @@ $ cat cap_metrics_gsm8k_20260203_151054.json
 
 <summary>detailed_results_*</summary>
 ```
-# cat detailed_results_gsm8k.jsonl 
+$ cat detailed_results_gsm8k.jsonl
 {"index": 0, "prompt_length": 4031, "success": true, "output_len": 1, "ttft": 35.56820008531213, "latency": 35.56820281967521, "itl": [], "error": ""}
 {"index": 1, "prompt_length": 4031, "success": true, "output_len": 1, "ttft": 35.565046813338995, "latency": 35.565052550286055, "itl": [], "error": ""}
 {"index": 2, "prompt_length": 4031, "success": true, "output_len": 1, "ttft": 35.56619094312191, "latency": 35.56619391031563, "itl": [], "error": ""}
