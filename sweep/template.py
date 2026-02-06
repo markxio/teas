@@ -1,4 +1,7 @@
+#!/bin/python3
+
 from datetime import datetime
+from utils import get_run_name
 
 class Template:
     def __init__(self):
@@ -16,13 +19,18 @@ class Template:
         gpu_product: str):
 
         timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        model_name_clean=model_name.split("/")[1].replace(".", "-")
+        gpu=gpu_product.split("-")[1] 
+
+        run_name = get_run_name(model_name, gpu_product, num_gpu, target_input_tokens, target_output_tokens, batch_size, dataset)
+        run_name_lower = run_name.replace("_", "-").lower()
         
-        output_dir=f"{model_name.split("/")[1]}_{gpu_product.split("-")[1]}x{num_gpu}_{target_input_tokens}_{target_output_tokens}_bs{batch_size}_{dataset}"
         return f"""
 apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: sglang-moe-cap-
+  #generateName: sglang-moe-cap-{run_name.replace("_", "-").lower()}-
   labels:
     kueue.x-k8s.io/queue-name:  eidf230ns-user-queue
 spec:
@@ -32,6 +40,7 @@ spec:
   template:
     metadata:
       name: job-sglang-moe-cap
+      #name: job-sglang-moe-cap-{run_name.replace("_", "-").lower()}
     spec:
       containers:
       - name: sglang-server
@@ -56,20 +65,21 @@ spec:
               --port 30000 \\
               --expert-distribution-recorder-mode stat \\
               --tp-size {tensor_parallel_size} \\
-              &> /dev/shm/{output_dir}_{timestamp}.server_log &
+              &> /dev/shm/{run_name}_{timestamp}.server_log &
             SERVER_PID=$!
 
             # Wait until the /health endpoint returns HTTP 200
             echo "Waiting for SGLang server to be ready..."
+
             until curl -s -f http://localhost:30000/health > /dev/null; do
               echo -n "."
               sleep 2
             done
-            echo "SGLang server is ready!"
 
+            echo "SGLang server is ready!"
             echo "Starting to serve bench (sending http requests)..."
             
-            mkdir -p /dev/shm/{output_dir}
+            mkdir -p /dev/shm/{run_name}
             python -m moe_cap.runner.openai_api_profile \\
               --model_name {model_name} \\
               --datasets {dataset} \\
@@ -81,26 +91,31 @@ spec:
               --backend sglang \\
               --ignore-eos \\
               --server-batch-size {batch_size} \\
-              --output_dir /dev/shm/{output_dir} \\
-              &> /dev/shm/{output_dir}_{timestamp}.client_log
+              --output_dir /dev/shm/{run_name} \\
+              &> /dev/shm/{run_name}_{timestamp}.client_log
+
             echo "Starting to serve bench (sending http requests)... done!"
             echo "Benchmark finished, shutting down server..."
+
             kill $SERVER_PID
             wait $SERVER_PID
+            
             echo "Server stopped. Copying files to pvc..."
+            
             mkdir -p /mnt/ceph/tmp/MoE-CAP-outputs
-            cp -R /dev/shm/{output_dir} /mnt/ceph/tmp/MoE-CAP-outputs/
-            cp /dev/shm/{output_dir}_{timestamp}* /mnt/ceph/tmp/MoE-CAP-outputs/
+            cp -R /dev/shm/{run_name} /mnt/ceph/tmp/MoE-CAP-outputs/num_samples_256/
+            cp /dev/shm/{run_name}_{timestamp}* /mnt/ceph/tmp/MoE-CAP-outputs/num_samples_256/
+            
             echo "Files copied, exiting container"
         ports:
           - containerPort: 30000 
         resources:
           requests:
-            cpu: 24
-            memory: '256Gi'
+            cpu: 10
+            memory: '100Gi'
           limits:
-            cpu: 24
-            memory: '256Gi'
+            cpu: 10
+            memory: '100Gi'
             nvidia.com/gpu: {num_gpu}
         volumeMounts:
           - mountPath: /mnt/ceph

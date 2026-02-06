@@ -4,27 +4,7 @@ import argparse
 import pathlib
 import pandas as pd
 from template import Template as yaml_template
-
-"""
-Supported GPU products on EIDF:
-    nvidia.com/gpu.product: 'NVIDIA-A100-SXM4-80GB'
-    nvidia.com/gpu.product: 'NVIDIA-A100-SXM4-40GB'
-    nvidia.com/gpu.product: 'NVIDIA-A100-SXM4-40GB-MIG-3g.20gb'
-    nvidia.com/gpu.product: 'NVIDIA-A100-SXM4-40GB-MIG-1g.5gb'
-    nvidia.com/gpu.product: 'NVIDIA-H100-80GB-HBM3'
-    nvidia.com/gpu.product: 'NVIDIA-H200'
-"""
-GPU_MAP={
-    "A100":"NVIDIA-A100-SXM4-80GB",
-    "H100":"NVIDIA-H100-80GB-HBM3",
-    "H200":"NVIDIA-H200",
-}
-
-TOKEN_LENGTH_MAP={
-    "1K": 1000,
-    "4K": 4000,
-    "13K": 13000
-}
+from utils import get_run_name, GPU_MAP, TOKEN_LENGTH_MAP
 
 def write_yaml_files(target_dir, \
     file_content, \
@@ -36,7 +16,8 @@ def write_yaml_files(target_dir, \
     batch_size, \
     dataset):
 
-    file_name=f"{model_name.split("/")[1]}_{gpu}x{num_gpu}_{target_input_tokens}_{target_output_tokens}_bs{batch_size}_{dataset}.yaml"
+    run_name = get_run_name(model_name, gpu, num_gpu, target_input_tokens, target_output_tokens, batch_size, dataset)
+    file_name = f"{model_name.split("/")[1]}_{gpu}x{num_gpu}_{target_input_tokens}_{target_output_tokens}_bs{batch_size}_{dataset}.yaml"
 
     with open(f"{target_dir}/{file_name}", "w") as f:
         f.write(file_content)
